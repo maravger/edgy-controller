@@ -17,7 +17,7 @@ import os
 
 @api_view(['POST'])
 @parser_classes((JSONParser,))
-def collector(request, format=None):
+def collect(request, format=None):
     try:
         os.mkdir('logs')
     except Exception:

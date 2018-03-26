@@ -1,10 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 from celery import task
 import os.path
+import logging
 
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 @task()
-def stats_aggregation():
+def aggregate_stats():
     print('Aggregating Interval Stats')
     cwd = os.path.dirname(__file__)
 
@@ -30,7 +33,7 @@ def stats_aggregation():
 
     # print sub_size
     # print fin_size
-    print 'Average Interval Response Time: ' + str(interval_art)
+    logger.info('Average Interval Response Time: ' + str(interval_art))
 
     with open(os.path.join(cwd,'../logs/intervals.csv'), 'a') as f:
         f.write(str(str(sub_size) + ',' + str(fin_size) + ',' + str(interval_art) + '\n'))

@@ -1,1 +1,1 @@
-from logger import collector
+from logger import collect
