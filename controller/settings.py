@@ -11,11 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from api.tasks import aggregate_stats
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -131,8 +129,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Makassar'
 CELERY_BEAT_SCHEDULE = {
-        'stats-aggregation-every-30-seconds': {
-            'task': 'api.tasks.stats_aggregation',
-            'schedule': 30.0,
-        }
+    'probe-per-sec': {
+        'task': 'api.tasks.stats_aggregator.probe_per_sec',
+        'schedule': 1.0
+    },
+    'probe-per-interval': {
+        'task': 'api.tasks.stats_aggregator.probe_per_interval',
+        'schedule': 30.0
+    }
 }

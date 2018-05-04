@@ -1,1 +1,1 @@
-from logger import collect
+from controller import scale
