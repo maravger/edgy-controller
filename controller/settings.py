@@ -26,6 +26,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.50']
 
+GLOBAL_SETTINGS = {
+    'SAMPLING_INTERVAL': 10.0,
+    'START_TIME': 'blah',
+}
 
 # Application definition
 
@@ -130,11 +134,11 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Makassar'
 CELERY_BEAT_SCHEDULE = {
     'probe-per-sec': {
-        'task': 'api.tasks.stats_aggregator.probe_per_sec',
+        'task': 'api.tasks.probers.probe_per_sec',
         'schedule': 1.0
     },
     'probe-per-interval': {
-        'task': 'api.tasks.stats_aggregator.probe_per_interval',
-        'schedule': 30.0
+        'task': 'api.tasks.probers.probe_per_interval',
+        'schedule': GLOBAL_SETTINGS["SAMPLING_INTERVAL"]
     }
 }
