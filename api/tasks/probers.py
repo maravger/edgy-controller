@@ -44,6 +44,7 @@ def probe_per_sec():
             except ObjectDoesNotExist:
                 # Create container representation in the db if it does not exist
                 cont = Container(cont_id=cont_id)
+                cont.save()
             cont.accu_cpu += float(cpu)
             cont.ticks += 1
             try:
@@ -85,6 +86,11 @@ def scale():
     client = docker.from_env()
     # Get containers
     containers = client.containers.list()
+    containers_ids = []
+    # Remove "ghost" container records
+    for container in containers:
+        containers_ids.append(container.id[:12])
+    Container.objects.exclude(cont_id__in=containers_ids).delete()
     # Calculate new operating conditions
     for container in containers:
         cont = Container.objects.get(cont_id=container.id[:12])
