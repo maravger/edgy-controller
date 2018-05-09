@@ -12,17 +12,17 @@ import docker
 import requests
 import os
 
-U_PES_MIN = [[0, 0.10, 0.20, 0.30, 0.40], [0, 0.10, 0.20, 0.30, 0.40]]
-U_PES_MAX = [[0, 0.30, 0.40, 0.50, 0.60], [0, 0.30, 0.40, 0.50, 0.60]]
-U_REQ_MIN = [[0, 0.5, 3.5, 4.5, 5.5], [0, 0.5, 3.5, 4.5, 5.5]]
-U_REQ_MAX = [[0, 3.5, 5.5, 7.5, 10], [0, 3.5, 5.5, 7.5, 10]]
-X_ART_REF = [[0, 2.5, 2.5, 2.5, 2.5], [0, 3.5, 3.5, 3.5, 3.5]]
-U_PES_REF = [[0, 0.25, 0.35, 0.45, 0.55], [0, 0.25, 0.35, 0.45, 0.55]]
-U_REQ_REF = [[0, 2.9522, 4.6272, 6.1769, 8.0228], [0, 3.2358, 5.2899, 7.375, 9.5755]]
-K1 = [[0, 0, 0, 0, 0.84874], [0, 1.4286, 0, 0, 0.61825]]
-K2 = [[0, -0.21913, -0.34912, -0.52926, -0.79089], [0, -0.075496, -0.060028, -0.035707, -0.1213]]
-MAX_TOTAL_CONT_PES = 1.00
-INTERVAL = 30
+U_PES_MIN = settings.GLOBAL_SETTINGS['U_PES_MIN']
+U_PES_MAX = settings.GLOBAL_SETTINGS['U_PES_MAX']
+U_REQ_MIN = settings.GLOBAL_SETTINGS['U_REQ_MIN']
+U_REQ_MAX = settings.GLOBAL_SETTINGS['U_REQ_MAX']
+X_ART_REF = settings.GLOBAL_SETTINGS['X_ART_REF']
+U_PES_REF = settings.GLOBAL_SETTINGS['U_PES_REF']
+U_REQ_REF = settings.GLOBAL_SETTINGS['U_REQ_REF']
+K1 = settings.GLOBAL_SETTINGS['K1']
+K2 = settings.GLOBAL_SETTINGS['K2']
+MAX_TOTAL_CONT_PES = settings.GLOBAL_SETTINGS['MAX_TOTAL_CONT_PES']
+SAMPLING_INTERVAL = settings.GLOBAL_SETTINGS['SAMPLING_INTERVAL']
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)  # type: Logger
@@ -32,7 +32,6 @@ def probe_per_sec():
     # Only CPU logging for now
     bulk = str(subprocess.check_output("docker stats --format '{{.Container}} {{.CPUPerc}}' --no-stream", shell=True))
     bulk_list = filter(None, bulk.split("\n"))
-    # logger.info(bulk_list)
     for line in bulk_list:
         all_info = line.split()
         cont_id = all_info[0]
@@ -72,7 +71,7 @@ def probe_per_interval():
         cont.prev_fin = interval_info_dict['requests_finished']
         cont.prev_art = interval_info_dict['average_response_time']
         cont.calc_cpu_usg()
-        cont.predict_next_rr(settings.GLOBAL_SETTINGS['SAMPLING_INTERVAL'])
+        cont.predict_next_rr(SAMPLING_INTERVAL)
         cont.print_logs()
         cont.truncate()
         cont.save()
@@ -137,5 +136,5 @@ def scale():
                                    str(container.id)], shell=True, stdout=devnull, stderr=subprocess.STDOUT)
         # Define upper request rate upper limit
         post_url = "http://localhost:{0}/ca_tf/serverInfo/".format(port)
-        data_json = {'number': cont.next_real_rr*INTERVAL}
+        data_json = {'number': cont.next_real_rr*SAMPLING_INTERVAL}
         requests.post(post_url, json=data_json)

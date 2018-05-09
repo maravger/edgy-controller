@@ -1,25 +1,25 @@
 import logging
-import time
+import datetime
 from django.db import models
 
 
 class Container(models.Model):
-    cont_id = models.CharField(max_length=50, unique=True)
+    cont_id = models.CharField(max_length=50, unique=True)  # Container ID
     host_id = models.IntegerField(default=0)
-    op_point = models.IntegerField(default=1)
-    app_id = models.IntegerField(default=0)
-    accu_cpu = models.FloatField(default=0)
-    ticks = models.IntegerField(default=0)
+    op_point = models.IntegerField(default=1)  # Operational Point
+    app_id = models.IntegerField(default=0)  # Application ID
+    accu_cpu = models.FloatField(default=0)  # Accumulated interval cpu usage
+    ticks = models.IntegerField(default=0)  # Number of times that cpu was probed within the last interval
     avg_cpu = models.FloatField(default=0)
-    s = models.FloatField(default=0)
-    b = models.FloatField(default=0)
-    prev_subm = models.IntegerField(default=0)
-    prev_rej = models.IntegerField(default=0)
-    prev_fin = models.IntegerField(default=0)
-    prev_art = models.FloatField(default=0)  # Transmit + Execution Time
-    next_pes = models.FloatField(default=0)
-    next_real_rr = models.FloatField(default=0)  # Limit
-    next_predicted_rr = models.FloatField(default=0)
+    s = models.FloatField(default=0)  # Predictor-specific value
+    b = models.FloatField(default=0)  # Predictor-specific value
+    prev_subm = models.IntegerField(default=0)  # Requests submitted in last interval
+    prev_rej = models.IntegerField(default=0)  # Requests rejected in last interval
+    prev_fin = models.IntegerField(default=0)  # Requests finished in last interval
+    prev_art = models.FloatField(default=0)  # Average Transmit + Execution Time in last interval
+    next_pes = models.FloatField(default=0)  # PES to be allocated in the next interval (vertical scaling)
+    next_real_rr = models.FloatField(default=0)  # Request Rate Limit for the next interval (vertical scaling)
+    next_predicted_rr = models.FloatField(default=0)  # Predicted Request Rate for the next interval
 
     def __unicode__(self):
         return self.cont_id
@@ -45,7 +45,8 @@ class Container(models.Model):
         self.avg_cpu = self.accu_cpu / self.ticks
 
     def print_logs(self):
-        elapsed_time = time.time()
+        # TODO make it truly 'elapsed' time
+        elapsed_time = datetime.datetime.now()
         # Get an instance of a logger
         logger = logging.getLogger(__name__)  # type: Logger
         logger.warning(("Time: {0} | Container: {1} | Average CPU Usage: {2} | Average Interval Response Time: {3} | " +
