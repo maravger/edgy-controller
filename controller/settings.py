@@ -27,6 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.50']
 
 GLOBAL_SETTINGS = {
+    'API_URL': '',
     'SAMPLING_INTERVAL': 30.0,
     'U_PES_MIN': [[0, 0.10, 0.20, 0.30, 0.40], [0, 0.10, 0.20, 0.30, 0.40]],
     'U_PES_MAX': [[0, 0.30, 0.40, 0.50, 0.60], [0, 0.30, 0.40, 0.50, 0.60]],

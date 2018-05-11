@@ -13,6 +13,7 @@ import requests
 import os
 
 
+API_URL = settings.GLOBAL_SETTINGS['API_URL']
 U_PES_MIN = settings.GLOBAL_SETTINGS['U_PES_MIN']
 U_PES_MAX = settings.GLOBAL_SETTINGS['U_PES_MAX']
 U_REQ_MIN = settings.GLOBAL_SETTINGS['U_REQ_MIN']
@@ -76,6 +77,8 @@ def probe_per_interval():
         cont.calc_cpu_usg()
         cont.predict_next_rr(SAMPLING_INTERVAL)
         cont.print_logs_and_csvs()
+        if API_URL:  # Send to remote  only if API has been defined
+            cont.post_to_api(API_URL)
         cont.truncate()
         cont.save()
     scale()
