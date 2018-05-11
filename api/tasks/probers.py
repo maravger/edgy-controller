@@ -49,7 +49,7 @@ def probe_per_sec():
             try:
                 cont.save()
             except OperationalError:
-                logger.warning("DB locked: concurrency avoided")
+                print("DB locked: concurrency avoided")
 
 @task()
 def probe_per_interval():
@@ -63,8 +63,8 @@ def probe_per_interval():
         port = subprocess.check_output(["docker port {0} | cut -d ':' -f 2".format(container.id)], shell=True)[:-1]
         get_url = "http://localhost:{0}/ca_tf/getLogs/".format(port)
         interval_info = requests.get(get_url)
-        logger.warning(interval_info.text)
-        logger.warning(interval_info.json())
+        print(interval_info.text)
+        print(interval_info.json())
         interval_info_dict = interval_info.json()
         cont.prev_subm = interval_info_dict['requests_submitted']
         cont.prev_rej = interval_info_dict['requests_rejected']
@@ -93,10 +93,10 @@ def scale():
     # Calculate new operating conditions
     for container in containers:
         cont = Container.objects.get(cont_id=container.id[:12])
-        logger.info('Container ID: ' + cont.cont_id)
-        logger.info('Container Host: ' + str(cont.host_id))
-        logger.warning('Container Operating Point: ' + str(cont.op_point))
-        logger.warning('Container Previous Response Time: ' + str(cont.prev_art))
+        print('Container ID: ' + cont.cont_id)
+        print('Container Host: ' + str(cont.host_id))
+        print('Container Operating Point: ' + str(cont.op_point))
+        print('Container Previous Response Time: ' + str(cont.prev_art))
         # Models
         x0 = cont.prev_art
         op = cont.op_point
@@ -107,16 +107,16 @@ def scale():
         elif pes_to_scale < U_PES_MIN[app_id][op]:
             pes_to_scale = U_PES_MIN[app_id][op]
         cont.next_pes = pes_to_scale * total_available_pes
-        logger.warning('PES to allocate to Container (%): ' + str(cont.next_pes))
+        print('PES to allocate to Container (%): ' + str(cont.next_pes))
 
         total_pes += cont.next_pes
-        logger.warning('Total allocated PES of this Host (%): ' + str(total_pes))
+        print('Total allocated PES of this Host (%): ' + str(total_pes))
         request_rate_upper_limit = K2[app_id][op] * (x0 - X_ART_REF[app_id][op]) + U_REQ_REF[app_id][op]
         if request_rate_upper_limit > U_REQ_MAX[app_id][op]:
             request_rate_upper_limit = U_REQ_MAX[app_id][op]
         elif request_rate_upper_limit < U_REQ_MIN[app_id][op]:
             request_rate_upper_limit = U_REQ_MIN[app_id][op]
-        logger.warning('Request Rate Upper Limit for Container: ' + str(request_rate_upper_limit))
+        print('Request Rate Upper Limit for Container: ' + str(request_rate_upper_limit))
         cont.next_real_rr = request_rate_upper_limit
         cont.save()
     # PES normalization process

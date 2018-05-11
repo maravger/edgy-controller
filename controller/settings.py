@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.50']
 
 GLOBAL_SETTINGS = {
-    'SAMPLING_INTERVAL': 10.0,
+    'SAMPLING_INTERVAL': 30.0,
     'U_PES_MIN': [[0, 0.10, 0.20, 0.30, 0.40], [0, 0.10, 0.20, 0.30, 0.40]],
     'U_PES_MAX': [[0, 0.30, 0.40, 0.50, 0.60], [0, 0.30, 0.40, 0.50, 0.60]],
     'U_REQ_MIN': [[0, 0.5, 3.5, 4.5, 5.5], [0, 0.5, 3.5, 4.5, 5.5]],
@@ -148,6 +148,6 @@ CELERY_BEAT_SCHEDULE = {
     },
     'probe-per-interval': {
         'task': 'api.tasks.probers.probe_per_interval',
-        'schedule': GLOBAL_SETTINGS["SAMPLING_INTERVAL"]
+        'schedule': GLOBAL_SETTINGS['SAMPLING_INTERVAL']
     }
 }
