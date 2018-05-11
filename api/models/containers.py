@@ -46,7 +46,7 @@ class Container(models.Model):
     def calc_cpu_usg(self):
         self.avg_cpu = self.accu_cpu / self.ticks
 
-    def print_logs(self):
+    def print_logs_and_csvs(self):
         # TODO make it truly 'elapsed' time
         elapsed_time = datetime.datetime.now()
         # Get an instance of a logger

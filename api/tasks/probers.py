@@ -12,6 +12,7 @@ import docker
 import requests
 import os
 
+
 U_PES_MIN = settings.GLOBAL_SETTINGS['U_PES_MIN']
 U_PES_MAX = settings.GLOBAL_SETTINGS['U_PES_MAX']
 U_REQ_MIN = settings.GLOBAL_SETTINGS['U_REQ_MIN']
@@ -24,11 +25,13 @@ K2 = settings.GLOBAL_SETTINGS['K2']
 MAX_TOTAL_CONT_PES = settings.GLOBAL_SETTINGS['MAX_TOTAL_CONT_PES']
 SAMPLING_INTERVAL = settings.GLOBAL_SETTINGS['SAMPLING_INTERVAL']
 
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)  # type: Logger
 
 @task()
 def probe_per_sec():
+    logger.debug("persec")
     # Only CPU logging for now
     bulk = str(subprocess.check_output("docker stats --format '{{.Container}} {{.CPUPerc}}' --no-stream", shell=True))
     bulk_list = filter(None, bulk.split("\n"))
@@ -72,7 +75,7 @@ def probe_per_interval():
         cont.prev_art = interval_info_dict['average_response_time']
         cont.calc_cpu_usg()
         cont.predict_next_rr(SAMPLING_INTERVAL)
-        cont.print_logs()
+        cont.print_logs_and_csvs()
         cont.truncate()
         cont.save()
     scale()
