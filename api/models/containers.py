@@ -23,27 +23,9 @@ class Container(models.Model):
     prev_pes = models.FloatField(default=0)  # PES to allocated in the previous interval
     next_pes = models.FloatField(default=0)  # PES to be allocated in the next interval (vertical scaling)
     next_real_rr = models.FloatField(default=0)  # Request Rate Limit for the next interval (vertical scaling)
-    next_predicted_rr = models.FloatField(default=0)  # Predicted Request Rate for the next interval
 
     def __unicode__(self):
         return self.cont_id
-
-    def predict_next_rr(self, sampling_interval):
-        alpha = 0.5
-        v = 0.5
-        # Get an instance of a logger
-        logger = logging.getLogger(__name__)  # type: Logger
-        print("Predicting for Container serving App: " + str(self.app_id))
-        print(self.prev_subm + self.prev_rej)
-        prev_real_rr = round(float(self.prev_subm + self.prev_rej) / sampling_interval, 2)
-        print("Previous Real Request Rate: " + str(prev_real_rr))
-        s = alpha * prev_real_rr + (1 - alpha) * (self.s - self.b)
-        print("s = " + str(s))
-        self.b = v * (s - self.s) + (1 - v) * self.b
-        print("b = " + str(self.b))
-        self.s = round(s + self.b, 2)
-        print("Predicted Request Rate: " + str(self.s) + "\n")
-        self.next_predicted_rr = self.s
 
     def calc_cpu_usg(self):
         self.avg_cpu = self.accu_cpu / self.ticks
