@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^controller/', include('api.urls')),
+    url(r'^edgy_controller/', include('api.urls')),
 ]

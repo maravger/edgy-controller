@@ -24,7 +24,7 @@ SECRET_KEY = '$x1rl*op0c18u87_3ct8!l7c-%yd0z9$qs15kei9zl+kg(4n+#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.50']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.50', '0.0.0.0']
 
 GLOBAL_SETTINGS = {
     'API_URL': '',
@@ -147,9 +147,5 @@ CELERY_BEAT_SCHEDULE = {
     'probe-per-sec': {
         'task': 'api.tasks.probers.probe_per_sec',
         'schedule': 1.0
-    },
-    'probe-per-interval': {
-        'task': 'api.tasks.probers.probe_per_interval',
-        'schedule': GLOBAL_SETTINGS['SAMPLING_INTERVAL']
     }
 }

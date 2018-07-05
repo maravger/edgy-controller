@@ -10,7 +10,7 @@ class Container(models.Model):
     cont_id = models.CharField(max_length=50, unique=True)  # Container ID
     host_id = models.IntegerField(default=0)
     op_point = models.IntegerField(default=1)  # Operational Point
-    app_id = models.IntegerField(default=0)  # Application ID
+    app_id = models.AutoField(primary_key=True, default=0)  # Application ID
     accu_cpu = models.FloatField(default=0)  # Accumulated interval cpu usage
     ticks = models.IntegerField(default=0)  # Number of times that cpu was probed within the last interval
     avg_cpu = models.FloatField(default=0)
