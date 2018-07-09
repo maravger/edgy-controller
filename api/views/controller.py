@@ -123,5 +123,5 @@ def scale_vertically(request, format=None):
         post_url = "http://localhost:{0}/ca_tf/serverInfo/".format(port)
         data_json = {'number': cont.next_real_rr*SAMPLING_INTERVAL}
         requests.post(post_url, json=data_json)
-    #TODO catch potential errors in docker scaling and return appropriate response
+    # TODO catch potential errors in docker scaling and return appropriate response
     return Response(status=status.HTTP_200_OK)
