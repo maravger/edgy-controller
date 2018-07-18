@@ -4,13 +4,14 @@ import csv
 import os, errno
 import requests
 from django.db import models
+from django.db.models import Max
 
 
 class Container(models.Model):
-    cont_id = models.CharField(max_length=50, unique=True)  # Container ID
+    cont_id = models.CharField(max_length=50, primary_key=True)  # Container ID
     host_id = models.IntegerField(default=0)
     op_point = models.IntegerField(default=1)  # Operational Point
-    app_id = models.AutoField(primary_key=True, default=0)  # Application ID
+    app_id = models.IntegerField(default=0)  # Application ID
     accu_cpu = models.FloatField(default=0)  # Accumulated interval cpu usage
     ticks = models.IntegerField(default=0)  # Number of times that cpu was probed within the last interval
     avg_cpu = models.FloatField(default=0)
@@ -78,3 +79,10 @@ class Container(models.Model):
         self.accu_cpu = 0
         self.ticks = 0
         self.prev_pes = self.next_pes
+
+    def assign_app_id(self):
+        app_id = Container.objects.all().aggregate(Max('app_id'))
+        if app_id['app_id__max'] == None:
+            self.app_id = 0
+        else:
+            self.app_id = app_id['app_id__max'] + 1
