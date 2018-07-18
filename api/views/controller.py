@@ -85,17 +85,21 @@ def scale_vertically(request, format=None):
         # Models
         x0 = cont.prev_art
         op = combination[cont.app_id]
+        cont.op_point = op
+        cont.save()
         app_id = cont.app_id
         pes_to_scale = K1[app_id][op] * (x0 - X_ART_REF[app_id][op]) + U_PES_REF[app_id][op]
         if pes_to_scale > U_PES_MAX[app_id][op]:
             pes_to_scale = U_PES_MAX[app_id][op]
         elif pes_to_scale < U_PES_MIN[app_id][op]:
             pes_to_scale = U_PES_MIN[app_id][op]
+        print('Total available PES: ' + str(total_available_pes))
+        print('PES to scale: ' + str(pes_to_scale))
         cont.next_pes = pes_to_scale * total_available_pes
-        print('PES to allocate to Container (%): ' + str(cont.next_pes))
+        print('PES to allocate to Container: ' + str(cont.next_pes))
 
         total_pes += cont.next_pes
-        print('Total allocated PES of this Host (%): ' + str(total_pes))
+        print('Total allocated PES of this Host: ' + str(total_pes))
         request_rate_upper_limit = K2[app_id][op] * (x0 - X_ART_REF[app_id][op]) + U_REQ_REF[app_id][op]
         if request_rate_upper_limit > U_REQ_MAX[app_id][op]:
             request_rate_upper_limit = U_REQ_MAX[app_id][op]
@@ -117,7 +121,7 @@ def scale_vertically(request, format=None):
         port = subprocess.check_output(["docker port {0} | cut -d ':' -f 2".format(container.id)], shell=True)[:-1]
         # Scale PES
         with open(os.devnull, 'wb') as devnull: # suppress output
-            subprocess.check_call(["docker update --cpus=\"" + str(cont.next_pes*total_available_pes) + "\" " +
+            subprocess.check_call(["docker update --cpus=\"" + str(round(cont.next_pes,2)) + "\" " +
                                    str(container.id)], shell=True, stdout=devnull, stderr=subprocess.STDOUT)
         # Define upper request rate upper limit
         post_url = "http://localhost:{0}/ca_tf/serverInfo/".format(port)

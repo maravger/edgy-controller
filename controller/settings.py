@@ -24,8 +24,7 @@ SECRET_KEY = '$x1rl*op0c18u87_3ct8!l7c-%yd0z9$qs15kei9zl+kg(4n+#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.50', '0.0.0.0']
-
+ALLOWED_HOSTS = ['10.11.17.10', '127.0.0.1', 'localhost', '10.0.0.50', '0.0.0.0']
 GLOBAL_SETTINGS = {
     'API_URL': '',
     'SAMPLING_INTERVAL': 30.0,
@@ -143,6 +142,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Athens'
+CELERY_IMPORTS = ('api.tasks',)
 CELERY_BEAT_SCHEDULE = {
     'probe-per-sec': {
         'task': 'api.tasks.probers.probe_per_sec',
