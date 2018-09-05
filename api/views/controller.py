@@ -44,6 +44,8 @@ def get_app_stats(request):
         cont.prev_subm = interval_info_dict['requests_submitted']
         cont.prev_rej = interval_info_dict['requests_rejected']
         cont.prev_fin = interval_info_dict['requests_finished']
+	cont.prev_ct = interval_info_dict['average_computation_time']
+	cont.prev_tt = interval_info_dict['average_transmission_time']
         cont.prev_art = interval_info_dict['average_response_time']
         cont.calc_cpu_usg()
         cont.print_logs_and_csvs()
@@ -53,7 +55,11 @@ def get_app_stats(request):
             'requests_submitted': cont.prev_subm,
             'requests_rejected': cont.prev_rej,
             'requests_finished': cont.prev_fin,
-            'average_response_time': cont.prev_art
+            'average_response_time': cont.prev_art,
+	    'average_transmission_time': cont.prev_tt,
+            'average_computation_time': cont.prev_ct,
+	    'average_cpu_usage': cont.avg_cpu,
+	    'number_of_pes' : cont.next_pes
         }
         cont.truncate()
         cont.save()

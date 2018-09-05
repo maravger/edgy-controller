@@ -37,7 +37,9 @@ def probe_per_sec():
                 print ("Created container with id: " + str(cont.cont_id))
             cont.accu_cpu += float(cpu)
             cont.ticks += 1
+	    print ("tick")
             try:
                 cont.save()
             except OperationalError:
                 print("DB locked: concurrency avoided")
+	    print ("Container ticks: " + str(cont.ticks))

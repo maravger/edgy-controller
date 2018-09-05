@@ -14,7 +14,7 @@ class Container(models.Model):
     app_id = models.IntegerField(default=0)  # Application ID
     accu_cpu = models.FloatField(default=0)  # Accumulated interval cpu usage
     ticks = models.IntegerField(default=0)  # Number of times that cpu was probed within the last interval
-    avg_cpu = models.FloatField(default=0)
+    avg_cpu = models.FloatField(default=0) # Average interval CPU usage
     s = models.FloatField(default=0)  # Predictor-specific value
     b = models.FloatField(default=0)  # Predictor-specific value
     prev_subm = models.IntegerField(default=0)  # Requests submitted in last interval
@@ -22,6 +22,8 @@ class Container(models.Model):
     prev_fin = models.IntegerField(default=0)  # Requests finished in last interval
     prev_art = models.FloatField(default=0)  # Average Transmit + Execution Time in last interval
     prev_pes = models.FloatField(default=0)  # PES to allocated in the previous interval
+    prev_ct = models.FloatField(default=0)  # Computation (Execution) Time in the previous interval
+    prev_tt = models.FloatField(default=0)  # Transmission Time in the previous interval
     next_pes = models.FloatField(default=0)  # PES to be allocated in the next interval (vertical scaling)
     next_real_rr = models.FloatField(default=0)  # Request Rate Limit for the next interval (vertical scaling)
 
@@ -29,6 +31,7 @@ class Container(models.Model):
         return self.cont_id
 
     def calc_cpu_usg(self):
+	print ("Self ticks: " + str(self.ticks))
         self.avg_cpu = self.accu_cpu / self.ticks
 
     def print_logs_and_csvs(self):
