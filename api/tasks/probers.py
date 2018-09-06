@@ -32,7 +32,8 @@ def probe_per_sec():
             except:
                 # Create container representation in the db if it does not exist
                 cont = Container(cont_id=contid)
-                cont.assign_app_id()
+		cont.app_id = int(str(subprocess.check_output("docker port %s" % contid, shell=True))[-2]) - 1
+                # cont.assign_app_id() # -> deprecated
                 cont.save()
                 print ("Created container with id: " + str(cont.cont_id))
             cont.accu_cpu += float(cpu)

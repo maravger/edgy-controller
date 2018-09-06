@@ -31,7 +31,10 @@ class Container(models.Model):
         return self.cont_id
 
     def calc_cpu_usg(self):
-        self.avg_cpu = round((self.accu_cpu / self.ticks),3)
+	if self.ticks == 0:
+		self.avg_cpu = 0
+	else:
+        	self.avg_cpu = round((self.accu_cpu / self.ticks),3)
 
     def print_logs_and_csvs(self):
         # TODO make it truly 'elapsed' time
