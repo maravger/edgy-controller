@@ -106,11 +106,11 @@ def scale_vertically(request, format=None):
 
         total_pes += cont.next_pes
         print('Total allocated PES of this Host: ' + str(total_pes))
-        request_rate_upper_limit = K2[app_id][op] * (x0 - X_ART_REF[app_id][op]) + U_REQ_REF[app_id][op]
-        if request_rate_upper_limit > U_REQ_MAX[app_id][op]:
-            request_rate_upper_limit = U_REQ_MAX[app_id][op]
-        elif request_rate_upper_limit < U_REQ_MIN[app_id][op]:
-            request_rate_upper_limit = U_REQ_MIN[app_id][op]
+        request_rate_upper_limit = K2[app_id][op] * (x0 - X_ART_REF[app_id][op]) + U_REQ_REF[app_id][op] * SAMPLING_INTERVAL
+        if request_rate_upper_limit > U_REQ_MAX[app_id][op] * SAMPLING_INTERVAL:
+            request_rate_upper_limit = U_REQ_MAX[app_id][op] * SAMPLING_INTERVAL
+        elif request_rate_upper_limit < U_REQ_MIN[app_id][op] * SAMPLING_INTERVAL:
+            request_rate_upper_limit = U_REQ_MIN[app_id][op] * SAMPLING_INTERVAL
         print('Request Rate Upper Limit for Container: ' + str(request_rate_upper_limit))
         cont.next_real_rr = request_rate_upper_limit
         cont.save()
@@ -131,7 +131,7 @@ def scale_vertically(request, format=None):
                                    str(container.id)], shell=True, stdout=devnull, stderr=subprocess.STDOUT)
         # Define upper request rate upper limit
         post_url = "http://localhost:{0}/ca_tf/serverInfo/".format(port)
-        data_json = {'number': cont.next_real_rr*SAMPLING_INTERVAL}
+        data_json = {'number': cont.next_real_rr}
         requests.post(post_url, json=data_json)
     # TODO catch potential errors in docker scaling and return appropriate response
     return Response(status=status.HTTP_200_OK)

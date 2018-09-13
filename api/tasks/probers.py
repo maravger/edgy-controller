@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)  # type: Logger
 
 @task()
 def probe_per_sec():
+    threshold = 6.00
     print("persec")
     # Only CPU logging for now
     bulk = str(subprocess.check_output("docker stats --format '{{.Container}} {{.CPUPerc}}' --no-stream", shell=True))
@@ -36,9 +37,12 @@ def probe_per_sec():
                 # cont.assign_app_id() # -> deprecated
                 cont.save()
                 print ("Created container with id: " + str(cont.cont_id))
-            cont.accu_cpu += float(cpu)
-            cont.ticks += 1
-	    print ("tick")
+	    print("probed CPU = " + cpu)
+	    # log CPU only if greater than a certain threshold (avoid logging idle cpu)
+	    if float(cpu) > threshold:
+            	cont.accu_cpu += float(cpu)
+            	cont.ticks += 1
+	    	print ("tick")
             try:
                 cont.save()
             except OperationalError:
