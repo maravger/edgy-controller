@@ -18,7 +18,7 @@ ipaddress==1.0.18
 jsonschema==2.6.0
 kombu==4.1.0
 olefile==0.44
-Pillow==4.3.0
+Pillow==6.2.0
 pytesseract==0.1.7
 pytz==2017.3
 PyYAML==3.12
