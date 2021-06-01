@@ -26,6 +26,6 @@ redis==2.10.6
 requests==2.11.1
 six==1.11.0
 texttable==0.9.1
-urllib3==1.22
+urllib3==1.26.5
 vine==1.1.4
 websocket-client==0.44.0
